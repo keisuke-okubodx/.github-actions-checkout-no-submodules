@@ -1,20 +1,24 @@
-name: 'Checkout (no submodules)'
-description: 'Checks out your repository without initializing or updating submodules'
+name: "Checkout without submodules"
+description: "Checkout a Git repository without initializing or updating submodules"
 inputs:
   repository:
-    description: 'The repository to checkout'
+    description: "The repository to check out"
     required: true
   ref:
-    description: 'The ref to checkout'
+    description: "The Git reference to check out"
     required: false
   token:
-    description: 'The token to use when cloning the repository'
+    description: "A GitHub Token to authenticate with"
     required: false
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
-    - name: 'Checkout repository'
-      shell: bash
+    - name: Checkout without submodules
       run: |
-        git clone --no-checkout --depth=1 --no-tags --progress -- ${{ inputs.repository }} .
-        git checkout --progress --force -B ${{ inputs.ref }}
+        git init
+        git remote add origin ${{ inputs.repository }}
+        git -c protocol.version=2 fetch --depth=1 --no-tags --progress origin +${{ inputs.ref }}:refs/remotes/origin/${{ inputs.ref }}
+        git checkout --progress --force -B ${{ inputs.ref }} refs/remotes/origin/${{ inputs.ref }}
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}
+        GIT_TERMINAL_PROMPT: 0
