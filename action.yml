@@ -19,6 +19,7 @@ runs:
         git remote add origin ${{ inputs.repository }}
         git -c protocol.version=2 fetch --depth=1 --no-tags --progress origin +${{ inputs.ref }}:refs/remotes/origin/${{ inputs.ref }}
         git checkout --progress --force -B ${{ inputs.ref }} refs/remotes/origin/${{ inputs.ref }}
+      shell: bash
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
         GIT_TERMINAL_PROMPT: 0
